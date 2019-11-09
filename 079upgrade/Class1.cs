@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _079upgrade
 {
-    class Class
+    class Class1
     {
     }
 }
