@@ -11,7 +11,7 @@ namespace upgrade079
         version = "3.5.0",
         SmodMajor = 3,
         SmodMinor = 4,
-        SmodRevision = 0
+        SmodRevision = 0 
         )]
     public class _079upgrade : Plugin
     {
