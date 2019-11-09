@@ -17,6 +17,7 @@ namespace upgrade079
         static Dictionary<string, bool> Pasivaa = new Dictionary<string, bool>();
         static Dictionary<string, bool> Speakers = new Dictionary<string, bool>();
         bool elevatoss = false;
+        bool antinanobots = false;
      
 
         private IEnumerator<float> elevators()
@@ -120,10 +121,10 @@ namespace upgrade079
                     if (ev.Player.Scp079Data.Level < 2) { ev.ReturnMessage = "Necesitas mas nivel"; }
                     if (ev.Player.Scp079Data.Level >= 2)
                     {
-                        if (ev.Player.Scp079Data.AP < 200) { ev.ReturnMessage = "Necesitas mas Energía (200)"; }
-                        if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 200)) { ev.ReturnMessage = "Habilidad en cooldown"; }
+                        if (ev.Player.Scp079Data.AP < 150) { ev.ReturnMessage = "Necesitas mas Energía (150)"; }
+                        if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 150)) { ev.ReturnMessage = "Habilidad en cooldown"; }
 
-                        if ((ev.Player.Scp079Data.AP >= 200) && (Pasivaa[ev.Player.SteamId] == true))
+                        if ((ev.Player.Scp079Data.AP >= 150) && (Pasivaa[ev.Player.SteamId] == true))
                         {
                             ev.Player.Scp079Data.AP -= 200;
                             ev.Player.SendConsoleMessage("Procedimiento 70726F746F636F6C6F206465206175746F646573747275636369F36E Cancelado.", "blue");
@@ -137,8 +138,8 @@ namespace upgrade079
                             }
                             else { MEC.Timing.RunCoroutine(Cooldown079(ev.Player), 1); }
                             PluginManager.Manager.Server.Map.StopWarhead();
-                            ev.Player.Scp079Data.Exp += 100;
-                            if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 10; }
+                            ev.Player.Scp079Data.Exp += 80;
+                            if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 20; }
                         }
                         if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
                     }
@@ -175,69 +176,128 @@ namespace upgrade079
                 }
 
             }
-            if (ev.Command.StartsWith("nanobots"))
+            if (antinanobots == false)
             {
-                if (ev.Player.TeamRole.Role != Role.SCP_079) { ev.ReturnMessage = "Tu no eres SCP-079, pero buen inteneto ;)"; }
-                if (ev.Player.TeamRole.Role == Role.SCP_079)
+                if (ev.Command.StartsWith("nanobots"))
                 {
-
-
-                    if (ev.Player.Scp079Data.Level < 3)
+                    if (ev.Player.TeamRole.Role != Role.SCP_079) { ev.ReturnMessage = "Tu no eres SCP-079, pero buen inteneto ;)"; }
+                    if (ev.Player.TeamRole.Role == Role.SCP_079)
                     {
-                        if (ev.Player.Scp079Data.Level < 1)
+
+
+                        if (ev.Player.Scp079Data.Level < 3)
                         {
-                            if (ev.Player.Scp079Data.AP < 100) { ev.ReturnMessage = "Necesitas mas Energía (100)"; }
-
-                            if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 100)) { ev.ReturnMessage = "Habilidad en cooldown"; }
-
-                            if ((ev.Player.Scp079Data.AP >= 100) && (Pasivaa[ev.Player.SteamId] == true))
+                            if (ev.Player.Scp079Data.Level < 1)
                             {
-                                ev.Player.Scp079Data.AP -= 100;
-                                ev.Player.SendConsoleMessage("Enviando nanobots al ataque.", "blue");
-                                ev.ReturnMessage = "Enviando nanobots al ataque .";
-                                Pasivaa[ev.Player.SteamId] = false;
-                                int p = (int)System.Environment.OSVersion.Platform;
-                                if ((p == 4) || (p == 6) || (p == 128))
+                                if (ev.Player.Scp079Data.AP < 100) { ev.ReturnMessage = "Necesitas mas Energía (100)"; }
+
+                                if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 100)) { ev.ReturnMessage = "Habilidad en cooldown"; }
+
+                                if ((ev.Player.Scp079Data.AP >= 100) && (Pasivaa[ev.Player.SteamId] == true))
                                 {
-                                    MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), MEC.Segment.FixedUpdate);
-
-                                }
-                                else { MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), 1); }
-                                System.Random playrs = new System.Random();
-                                int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
-                                while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE))
-                                {
-                                    if (posic > PluginManager.Manager.Server.NumPlayers)
+                                    ev.Player.Scp079Data.AP -= 100;
+                                    ev.Player.SendConsoleMessage("Enviando nanobots al ataque.", "blue");
+                                    ev.ReturnMessage = "Enviando nanobots al ataque .";
+                                    Pasivaa[ev.Player.SteamId] = false;
+                                    int p = (int)System.Environment.OSVersion.Platform;
+                                    if ((p == 4) || (p == 6) || (p == 128))
                                     {
-                                        posic = 0;
-                                    }
-                                    posic = posic + 1;
-                                }
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
+                                        MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), MEC.Segment.FixedUpdate);
 
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
-                                {
-                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 50)
+                                    }
+                                    else { MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), 1); }
+                                    System.Random playrs = new System.Random();
+                                    int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
+                                    while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE))
                                     {
-                                        PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
-                                        ev.Player.Scp079Data.Exp += 30;
-                                        if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
+                                        if (posic > PluginManager.Manager.Server.NumPlayers)
+                                        {
+                                            posic = 0;
+                                        }
+                                        posic = posic + 1;
                                     }
-                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 50)
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
+
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
                                     {
-                                        PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-50);
+                                        if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 50)
+                                        {
+                                            PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
+                                            ev.Player.Scp079Data.Exp += 30;
+                                            if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
+                                        }
+                                        if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 50)
+                                        {
+                                            PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-50);
+                                        }
+
+
                                     }
-
-
+                                    ev.Player.Scp079Data.Exp += 30;
+                                    if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 10; }
                                 }
-                                ev.Player.Scp079Data.Exp += 30;
-                                if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 10; }
+                                if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
                             }
-                            if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
-                        }
-                        if((ev.Player.Scp079Data.Level < 4)&&(ev.Player.Scp079Data.Level >= 2)) 
-                        {
+                            if ((ev.Player.Scp079Data.Level < 4) && (ev.Player.Scp079Data.Level >= 2))
+                            {
 
+                                if (ev.Player.Scp079Data.AP < 50) { ev.ReturnMessage = "Necesitas mas Energía (50)"; }
+
+                                if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 50)) { ev.ReturnMessage = "Habilidad en cooldown"; }
+
+                                if ((ev.Player.Scp079Data.AP >= 50) && (Pasivaa[ev.Player.SteamId] == true))
+                                {
+                                    ev.Player.Scp079Data.AP -= 50;
+                                    ev.Player.SendConsoleMessage("Enviando nanobots al ataque.", "blue");
+                                    ev.ReturnMessage = "Enviando nanobots al ataque .";
+                                    Pasivaa[ev.Player.SteamId] = false;
+                                    int p = (int)System.Environment.OSVersion.Platform;
+                                    if ((p == 4) || (p == 6) || (p == 128))
+                                    {
+                                        MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), MEC.Segment.FixedUpdate);
+
+                                    }
+                                    else { MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), 1); }
+                                    System.Random playrs = new System.Random();
+                                    int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
+                                    while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE))
+                                    {
+                                        if (posic > PluginManager.Manager.Server.NumPlayers)
+                                        {
+                                            posic = 0;
+                                        }
+                                        posic = posic + 1;
+                                    }
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
+
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
+                                    {
+                                        if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 50)
+                                        {
+                                            PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
+                                            ev.Player.Scp079Data.Exp += 30;
+                                            if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
+                                        }
+                                        if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 50)
+                                        {
+                                            PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-50);
+                                        }
+
+
+                                    }
+                                    ev.Player.Scp079Data.Exp += 30;
+                                    if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 10; }
+                                }
+                                if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
+
+
+
+
+                            }
+                        }
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        if (ev.Player.Scp079Data.Level >= 4)
+                        {
                             if (ev.Player.Scp079Data.AP < 50) { ev.ReturnMessage = "Necesitas mas Energía (50)"; }
 
                             if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 50)) { ev.ReturnMessage = "Habilidad en cooldown"; }
@@ -245,70 +305,13 @@ namespace upgrade079
                             if ((ev.Player.Scp079Data.AP >= 50) && (Pasivaa[ev.Player.SteamId] == true))
                             {
                                 ev.Player.Scp079Data.AP -= 50;
-                                ev.Player.SendConsoleMessage("Enviando nanobots al ataque.", "blue");
-                                ev.ReturnMessage = "Enviando nanobots al ataque .";
+                                ev.Player.SendConsoleMessage("Enviando nanobots mejorados al ataque.", "red");
+                                ev.ReturnMessage = "Enviando nanobots mejorados al ataque .";
                                 Pasivaa[ev.Player.SteamId] = false;
-                                int p = (int)System.Environment.OSVersion.Platform;
-                                if ((p == 4) || (p == 6) || (p == 128))
-                                {
-                                    MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), MEC.Segment.FixedUpdate);
-
-                                }
-                                else { MEC.Timing.RunCoroutine(Cooldown0792(ev.Player), 1); }
-                                System.Random playrs = new System.Random();
-                                int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
-                                while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE))
-                                {
-                                    if (posic > PluginManager.Manager.Server.NumPlayers)
-                                    {
-                                        posic = 0;
-                                    }
-                                    posic = posic + 1;
-                                }
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
-
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
-                                {
-                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 50)
-                                    {
-                                        PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
-                                        ev.Player.Scp079Data.Exp += 30;
-                                        if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
-                                    }
-                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 50)
-                                    {
-                                        PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-50);
-                                    }
-
-
-                                }
-                                ev.Player.Scp079Data.Exp += 30;
-                                if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 10; }
-                            }
-                            if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
 
 
 
 
-                        }
-                    }
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    if (ev.Player.Scp079Data.Level >= 4)
-                    {
-                        if (ev.Player.Scp079Data.AP < 50) { ev.ReturnMessage = "Necesitas mas Energía (50)"; }
-
-                        if ((Pasivaa[ev.Player.SteamId] == false) && (ev.Player.Scp079Data.AP >= 50)) { ev.ReturnMessage = "Habilidad en cooldown"; }
-
-                        if ((ev.Player.Scp079Data.AP >= 50) && (Pasivaa[ev.Player.SteamId] == true))
-                        {
-                            ev.Player.Scp079Data.AP -= 50;
-                            ev.Player.SendConsoleMessage("Enviando nanobots mejorados al ataque.", "red");
-                            ev.ReturnMessage = "Enviando nanobots mejorados al ataque .";
-                            Pasivaa[ev.Player.SteamId] = false;
-                     
-                            
-                             
-                           
                                 int p = (int)System.Environment.OSVersion.Platform;
                                 if ((p == 4) || (p == 6) || (p == 128))
                                 {
@@ -316,35 +319,40 @@ namespace upgrade079
 
                                 }
                                 else { MEC.Timing.RunCoroutine(Cooldown0793(ev.Player), 1); }
-                            
 
-                            System.Random playrs = new System.Random();
-                            int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
-                            while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE)) { if (posic > PluginManager.Manager.Server.NumPlayers) { posic = 0; } posic = posic + 1; }
-                            if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
 
-                            if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
-                            {
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 75)
+                                System.Random playrs = new System.Random();
+                                int posic = playrs.Next(0, PluginManager.Manager.Server.GetPlayers().Count);
+                                while ((PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SPECTATOR) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Role == Role.SCP_079) || (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.NONE)) { if (posic > PluginManager.Manager.Server.NumPlayers) { posic = 0; } posic = posic + 1; }
+                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team == Smod2.API.Team.SCP) { PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(50); }
+
+                                if (PluginManager.Manager.Server.GetPlayers()[posic].TeamRole.Team != Smod2.API.Team.SCP)
                                 {
-                                    PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
-                                    ev.Player.Scp079Data.Exp += 30;
-                                    if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
-                                }
-                                if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 75)
-                                {
-                                    PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-75);
-                                }
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() <= 75)
+                                    {
+                                        PluginManager.Manager.Server.GetPlayers()[posic].Kill(DamageType.TESLA);
+                                        ev.Player.Scp079Data.Exp += 30;
+                                        if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 3; }
+                                    }
+                                    if (PluginManager.Manager.Server.GetPlayers()[posic].GetHealth() > 75)
+                                    {
+                                        PluginManager.Manager.Server.GetPlayers()[posic].AddHealth(-75);
+                                    }
 
 
+                                }
+                                ev.Player.Scp079Data.Exp += 30;
+                                if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 15; }
                             }
-                            ev.Player.Scp079Data.Exp += 30;
-                            if (ev.Player.Scp079Data.Level >= 4) { ev.Player.Scp079Data.MaxAP += 15; }
+                            if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
                         }
-                        if (Pasivaa[ev.Player.SteamId] == false) { ev.ReturnMessage = "habilidad en cooldown"; }
-                    }
 
+                    }
                 }
+            }
+            else 
+            {
+                ev.ReturnMessage = "nanobots desactivados";
             }
             if (ev.Command.StartsWith("nukenow"))
             {
@@ -354,7 +362,7 @@ namespace upgrade079
                     if (ev.Player.Scp079Data.AP < 300) { ev.ReturnMessage = "Necesitas mas Energía (300)"; }
                     if (ev.Player.Scp079Data.AP >= 300)
                     {
-                        ev.Player.Scp079Data.AP -= 400;
+                        ev.Player.Scp079Data.AP -= 300;
                         ev.Player.SendConsoleMessage("Lo importante es ganar... no?", "red");
                         ev.ReturnMessage = "..., Lo importante es ganar ....";
                         PluginManager.Manager.Server.Map.DetonateWarhead();
@@ -362,7 +370,11 @@ namespace upgrade079
                 }
 
             }
-
+            if (ev.Player.TeamRole.Role == Role.TUTORIAL)
+            {
+                if (ev.Command.StartsWith("nanobotson")) { antinanobots = false; }
+                if (ev.Command.StartsWith("nanobotsoff")) { antinanobots = true; }
+            }
         }
 
         public void OnElevatorUse(PlayerElevatorUseEvent ev)

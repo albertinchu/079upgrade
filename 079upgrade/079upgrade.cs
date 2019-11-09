@@ -5,9 +5,9 @@ namespace upgrade079
 {
     [PluginDetails(
         author = "Albertinchu ",
-        name = "Passivesandskills2",
+        name = "079upgrade",
         description = "Que pasará si dejamos que los jugadores tengan poderes...",
-        id = "albertinchu.079upgrade",
+        id = "albertinchu.079upgrade.upgrade1",
         version = "3.5.0",
         SmodMajor = 3,
         SmodMinor = 4,
